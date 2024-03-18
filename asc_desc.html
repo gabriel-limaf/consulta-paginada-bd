@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Table</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .pagination {
+            display: inline-block;
+        }
+        .pagination a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            margin: 0 4px;
+        }
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<table>
+    <thead>
+        <tr>
+            <th><a href="?pagina={{ pagina }}&coluna=ticker&direcao={{ 'asc' if direcao == 'desc' else 'desc' }}">Ticker</a></th>
+            <th><a href="?pagina={{ pagina }}&coluna=data_pregao&direcao={{ 'asc' if direcao == 'desc' else 'desc' }}">Data do Pregão</a></th>
+            <th><a href="?pagina={{ pagina }}&coluna=preco_fechamento&direcao={{ 'asc' if direcao == 'desc' else 'desc' }}">Preço de Fechamento</a></th>
+            <!-- Adicione mais colunas conforme necessário -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in dados %}
+            <tr>
+                <td>{{ row.ticker }}</td>
+                <td>{{ row.data_pregao }}</td>
+                <td>{{ row.preco_fechamento }}</td>
+                <!-- Adicione mais colunas conforme necessário -->
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    {% if pagina > 1 %}
+        <a href="?pagina=1{% if coluna %}&coluna={{ coluna }}{% endif %}{% if direcao %}&direcao={{ direcao }}{% endif %}">&laquo; Primeira</a>
+        <a href="?pagina={{ pagina - 1 }}{% if coluna %}&coluna={{ coluna }}{% endif %}{% if direcao %}&direcao={{ direcao }}{% endif %}">&lsaquo; Anterior</a>
+    {% endif %}
+
+    {% set inicio_paginas = pagina - 4 if pagina - 4 > 0 else 1 %}
+    {% set fim_paginas = pagina + 5 if pagina + 5 <= total_paginas else total_paginas %}
+
+    {% for i in range(inicio_paginas, fim_paginas + 1) %}
+        {% if i == pagina %}
+            <a href="#" class="active">{{ i }}</a>
+        {% else %}
+            <a href="?pagina={{ i }}{% if coluna %}&coluna={{ coluna }}{% endif %}{% if direcao %}&direcao={{ direcao }}{% endif %}">{{ i }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if pagina < total_paginas %}
+        <a href="?pagina={{ pagina + 1 }}{% if coluna %}&coluna={{ coluna }}{% endif %}{% if direcao %}&direcao={{ direcao }}{% endif %}">Próxima &rsaquo;</a>
+        <a href="?pagina={{ total_paginas }}{% if coluna %}&coluna={{ coluna }}{% endif %}{% if direcao %}&direcao={{ direcao }}{% endif %}">Última &raquo;</a>
+    {% endif %}
+</div>
+
+
+</body>
+</html>
+
